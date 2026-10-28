@@ -4,7 +4,7 @@
 
 A one-click Windows installer that turns on the full-rate **FP32-accumulate tensor-core path** of GeForce RTX 40-series cards at every start, before Windows loads the NVIDIA driver. It comes with a small GUI and an on/off switch.
 
-> **Experimental. Only the RTX 4090 has been tested.** The other RTX 40-series cards are supported but untested (see [Supported cards](#supported-cards)). At every start it changes the firmware boot order and writes GPU registers. Read [Risks](#risks) first. Use at your own risk.
+> **Experimental. The upstream author has tested only the RTX 4090.** The other RTX 40-series cards are supported but untested by the author (see [Supported cards](#supported-cards)); one independent RTX 4070 Ti report is recorded under [Tested vs untested](#tested-vs-untested). At every start it changes the firmware boot order and writes GPU registers. Read [Risks](#risks) first. Use at your own risk.
 
 ![Main window](docs/images/main-en.png)
 
@@ -34,7 +34,7 @@ Matrix-math throughput on the one card tested (**RTX 4090** 24 GB, 450 W limit, 
 
 ## Supported cards
 
-Made for **GeForce RTX 40-series** cards: RTX 4090, 4080, 4080 SUPER, 4070 Ti SUPER, 4070 Ti, 4070 SUPER and 4070 (standard memory sizes, one card per PC). **Only the RTX 4090 has been tested.**
+Made for **GeForce RTX 40-series** cards: RTX 4090, 4080, 4080 SUPER, 4070 Ti SUPER, 4070 Ti, 4070 SUPER and 4070 (standard memory sizes, one card per PC). **Only the RTX 4090 has been tested by the upstream author.** An independent community report for one RTX 4070 Ti system is recorded under [Tested vs untested](#tested-vs-untested); it is not a general support guarantee.
 
 On every card other than the RTX 4090 the program is more careful (all of it can be undone from the window):
 
@@ -75,6 +75,20 @@ The installer's **Check system** button checks each of these and refuses to inst
 | UI at 100 %, and simulated 125 % and 150 % scaling | User names or paths with non-ASCII characters |
 
 **Reports from other machines are very welcome.** Please open an issue with your board, BIOS version, GPU brand, Windows version and the boot log (button **Boot log**; the `FINAL` line matters most).
+
+### Community verification in this fork
+
+An independent test on 28 October 2026 verified the unlock on:
+
+- Inno3D GeForce RTX 4070 Ti 12 GB (AD104)
+- ASRock Z690M-ITX/ax, BIOS 20.01
+- Intel Core i5-13600KF, 32 GB RAM
+- Windows 11 Pro, build 26200
+- NVIDIA driver 610.88
+
+The verified configuration is the one now integrated in this fork's `main`: the installer TLS fix, the post-unlock GOP handoff recovery and the no-GOP display-child ownership change that allowed a dual-display boot. Those changes are not in upstream `main`; they remain separate, optional proposals for the upstream project in [PR #2](https://github.com/Zihao-Wu06/gpu-unlock-for-windows/pull/2), [PR #3](https://github.com/Zihao-Wu06/gpu-unlock-for-windows/pull/3) and [PR #4](https://github.com/Zihao-Wu06/gpu-unlock-for-windows/pull/4).
+
+On that system, PyTorch GEMM throughput increased by 50.7–64.5% across the tested tensor-core cases at 4096³, pure FP32 was unchanged, and the outputs were bit-identical before and after. This report exercises the AD104 chip, VRAM and chip-id checks on one machine; it does not make every RTX 4070 Ti, board or BIOS combination supported. Details are in [upstream issue #1](https://github.com/Zihao-Wu06/gpu-unlock-for-windows/issues/1).
 
 ## Install
 
